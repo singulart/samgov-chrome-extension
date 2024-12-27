@@ -1,9 +1,3 @@
-const paginationElement = Array.from(document.querySelectorAll('sds-pagination')).find( el =>
-  Array.from(el.querySelectorAll('*')).some(child => 
-    /^Showing \d+ - \d+ of \d{1,3}(,\d{3})* results$/.test(child.textContent.trim())
-  )
-);
-console.log(paginationElement);
 // Create the button element
 const button = document.createElement("button");
 
@@ -104,6 +98,27 @@ button.addEventListener("click", () => {
   document.body.appendChild(popupContainer);
 });
 
-if(paginationElement) {
-  paginationElement.appendChild(button);
-}
+
+let paginationElement = undefined;
+const observer = new MutationObserver((mutations) => {
+  const sdsPaginationElement = Array.from(document.querySelectorAll('sds-pagination'));
+  console.log(`Found ${sdsPaginationElement.length} pagination elements`);
+  if (sdsPaginationElement.length > 0) {
+    for (let i = 0; i < sdsPaginationElement.length; i++) {
+      console.log(sdsPaginationElement[i]);
+      const sdsChildren = Array.from(sdsPaginationElement[i].querySelectorAll('*'));
+      for (let j = 0; j < debugChildren.length; j++) {
+        if(/^Showing \d+ - \d+ of \d{1,3}(,\d{3})* results$/.test(sdsChildren[j].textContent.trim())) {
+          paginationElement = sdsChildren[j];
+          observer.disconnect();
+          break;
+        }
+      }
+      if (paginationElement != undefined) {
+        paginationElement.appendChild(button);
+        break;
+      } 
+    } 
+  }
+});
+observer.observe(document.body, { childList: true, subtree: true });
