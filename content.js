@@ -57,6 +57,7 @@ button.addEventListener("click", () => {
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
+              "lastProcessedAt": new Date().getTime() + "",
               "email": emailInput.value,
               "query": data.samApiUrl
             })
@@ -107,7 +108,7 @@ const observer = new MutationObserver((mutations) => {
     for (let i = 0; i < sdsPaginationElement.length; i++) {
       console.log(sdsPaginationElement[i]);
       const sdsChildren = Array.from(sdsPaginationElement[i].querySelectorAll('*'));
-      for (let j = 0; j < debugChildren.length; j++) {
+      for (let j = 0; j < sdsChildren.length; j++) {
         if(/^Showing \d+ - \d+ of \d{1,3}(,\d{3})* results$/.test(sdsChildren[j].textContent.trim())) {
           paginationElement = sdsChildren[j];
           observer.disconnect();
