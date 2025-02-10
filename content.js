@@ -30,11 +30,12 @@ button.addEventListener("click", () => {
   const emailInput = document.createElement("input");
   emailInput.setAttribute("type", "email");
   emailInput.setAttribute("placeholder", "Enter your email");
-  emailInput.style.width = "100%";
-  emailInput.style.padding = "10px";
-  emailInput.style.marginBottom = "10px";
-  emailInput.style.border = "1px solid #ccc";
-  emailInput.style.borderRadius = "4px";
+  emailInput.setAttribute("class", "usa-input display-inline-block");
+
+  // Create the description input field
+  const descriptionInput = document.createElement("input");
+  descriptionInput.setAttribute("placeholder", "Name your search");
+  descriptionInput.setAttribute("class", "usa-input display-inline-block");
 
   // Create the submit button
   const submitButton = document.createElement("button");
@@ -43,6 +44,28 @@ button.addEventListener("click", () => {
   submitButton.style.marginTop = "10px";
   submitButton.style.width = "100%";
   submitButton.style.padding = "10px";
+
+  // Create the Privacy Notice link
+  const privacyLink = document.createElement("a");
+  privacyLink.setAttribute("href", "https://argorand.io/privacy-notice/");
+  privacyLink.setAttribute("target", "_blank");
+  privacyLink.textContent = "Privacy Notice";
+  privacyLink.style.display = "block";
+  privacyLink.style.textAlign = "center";
+  privacyLink.style.marginTop = "10px";
+  privacyLink.style.color = "#0073e6";
+  privacyLink.style.textDecoration = "none";
+  privacyLink.style.fontSize = "14px";
+
+  // Add hover effect
+  privacyLink.addEventListener("mouseover", () => {
+    privacyLink.style.textDecoration = "underline";
+  });
+  privacyLink.addEventListener("mouseout", () => {
+    privacyLink.style.textDecoration = "none";
+  });
+
+
 
   // Add event listener to submit button
   submitButton.addEventListener("click", () => {
@@ -59,6 +82,7 @@ button.addEventListener("click", () => {
             body: JSON.stringify({
               "lastProcessedAt": new Date().getTime() + "",
               "email": emailInput.value,
+              "description": descriptionInput.value,
               "query": data.samApiUrl
             })
           }).then(response => {
@@ -70,13 +94,12 @@ button.addEventListener("click", () => {
           console.log("No URL saved yet.");
         }
       });
-      document.body.removeChild(popupContainer); // Close the popup
+      document.body.removeChild(popupContainer); 
     } else {
       alert("Please enter a valid email address.");
     }
   });
 
-  // Add a close button
   const closeButton = document.createElement("button");
   closeButton.textContent = "Close";
   closeButton.style.position = "absolute";
@@ -87,15 +110,16 @@ button.addEventListener("click", () => {
   closeButton.style.fontSize = "16px";
   closeButton.style.cursor = "pointer";
   closeButton.addEventListener("click", () => {
-    document.body.removeChild(popupContainer); // Close the popup
+    document.body.removeChild(popupContainer); 
   });
 
-  // Append elements to the popup
   popupContainer.appendChild(closeButton);
+  popupContainer.appendChild(descriptionInput);
   popupContainer.appendChild(emailInput);
   popupContainer.appendChild(submitButton);
+  popupContainer.appendChild(privacyLink);
 
-  // Append the popup to the body
+
   document.body.appendChild(popupContainer);
 });
 
