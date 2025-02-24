@@ -5,6 +5,7 @@ const button = document.createElement("button");
 button.setAttribute("type", "button");
 button.setAttribute("cdkfocusinitial", "");
 button.className = "usa-button"; // Add the class
+button.id = "argorand_button"; // Add the ID
 
 // Set the button text
 button.textContent = "Create email alert";
@@ -126,24 +127,42 @@ button.addEventListener("click", () => {
 
 let paginationElement = undefined;
 const observer = new MutationObserver((mutations) => {
-  const sdsPaginationElement = Array.from(document.querySelectorAll('sds-pagination'));
-  console.log(`Found ${sdsPaginationElement.length} pagination elements`);
-  if (sdsPaginationElement.length > 0) {
-    for (let i = 0; i < sdsPaginationElement.length; i++) {
-      console.log(sdsPaginationElement[i]);
-      const sdsChildren = Array.from(sdsPaginationElement[i].querySelectorAll('*'));
-      for (let j = 0; j < sdsChildren.length; j++) {
-        if(/^Showing \d+ - \d+ of \d{1,3}(,\d{3})* results$/.test(sdsChildren[j].textContent.trim())) {
-          paginationElement = sdsChildren[j];
-          observer.disconnect();
-          break;
+
+  const existingButton = document.querySelector('#argorand_button');
+  if(existingButton != undefined) {
+    console.log("Button already visible");
+    return;
+  }
+
+  observer.disconnect();
+
+  try {
+    const sdsPaginationElement = Array.from(document.querySelectorAll('sds-pagination'));
+    console.log(`Found ${sdsPaginationElement.length} pagination elements`);
+    if (sdsPaginationElement.length > 0) {
+      for (let i = 0; i < sdsPaginationElement.length; i++) {
+        console.log(sdsPaginationElement[i]);
+        const sdsChildren = Array.from(sdsPaginationElement[i].querySelectorAll('*'));
+        for (let j = 0; j < sdsChildren.length; j++) {
+          if(/^Showing \d+ - \d+ of \d{1,3}(,\d{3})* results$/.test(sdsChildren[j].textContent.trim())) {
+            paginationElement = sdsChildren[j];
+            break;
+          }
         }
-      }
-      if (paginationElement != undefined) {
-        paginationElement.appendChild(button);
-        break;
+        if (paginationElement != undefined) {
+          paginationElement.appendChild(button);
+          break;
+        } 
       } 
-    } 
+    } else {
+      const sdsSearchResultElement = document.querySelector('sds-search-result-list');
+      if(sdsSearchResultElement != undefined) {
+        sdsSearchResultElement.appendChild(button);
+      }
+    }
+  } finally {
+    observer.observe(document.body, { childList: true, subtree: true });
   }
 });
+
 observer.observe(document.body, { childList: true, subtree: true });
